@@ -1,0 +1,12 @@
+.git
+.gitignore
+.idea
+
+client
+
+*.log
+*.out
+*.tmp
+
+bin
+dist
