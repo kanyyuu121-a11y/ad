@@ -4,6 +4,7 @@ import (
 	advertise "advertiseproject/kitex_gen/advertiseproject/advertise"
 	"advertiseproject/kitex_gen/base"
 	"context"
+	"log"
 )
 
 // AdServiceImpl implements the last service interface defined in the IDL.
@@ -22,7 +23,7 @@ func (s *AdServiceImpl) GetAd(ctx context.Context, req *advertise.GetAdReq) (res
 	resp.BaseRes = base.NewBaseRes()
 	resp.BaseRes.Code = 0
 	resp.BaseRes.Msg = "fffffffuuuuckuuuuu"
-
+	log.Println(resp)
 	return
 }
 
