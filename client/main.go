@@ -15,19 +15,15 @@ import (
 )
 
 func main() {
-	hostPort := os.Getenv("AD_HOST_PORT")
-	if hostPort == "" {
-		hostPort = "127.0.0.1:8888"
-	}
 
 	cbs := circuitbreak.NewCBSuite(circuitbreak.RPCInfo2Key)
 
 	cli, err := adservice.NewClient(
 		"AdService",
-		client.WithHostPorts(hostPort),
+		client.WithHostPorts("121.196.231.74:8888"),
 		client.WithRPCTimeout(500*time.Millisecond),
 		client.WithCircuitBreaker(cbs),
-		client.WithFallback(fallback.TimeoutAndCBFallback(fallback.UnwrapHelper(func(ctx context.Context, req, resp interface{}, err error) (interface{}, error) {
+		client.WithFallback(fallback.ErrorFallback(fallback.UnwrapHelper(func(ctx context.Context, req, resp interface{}, err error) (interface{}, error) {
 			r, _ := req.(*advertise.GetAdReq)
 			return &advertise.GetAdRes{
 				Ad: &advertise.Advertise{
@@ -46,12 +42,12 @@ func main() {
 
 	scenario := os.Getenv("AD_SCENARIO")
 	if scenario == "" {
-		scenario = "normal"
+		scenario = "breaker"
 	}
 
 	switch scenario {
 	case "normal":
-		callOnce(cli, &advertise.GetAdReq{Id: 1})
+		callOnce(cli, &advertise.GetAdReq{Id: 10})
 	case "timeout":
 		callOnce(cli, &advertise.GetAdReq{Id: 999, Name: "slow"})
 	case "breaker":
